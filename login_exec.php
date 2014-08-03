@@ -50,6 +50,41 @@
         exit();
       }
 
+      //Create query
 
+      $qry = "SELECT * FROM member WHERE username='$username' AND password='$password' ";
+      $result = mysql_query($qry);
+
+      //Check wether the query successful or not
+
+      if($result){
+
+      		if(mysql_num_rows($result) > 0){
+      			//Login successful
+      			session_regenerate_id();
+      			$member = mysql_fetch_assoc($result);
+      			$_SESSION['SESS_MEMBER_ID'] = $member['mem_id'];
+      			$_SESSION['SESS_FIRST_NAME'] = $member['username'];
+      			$_SESSION['SESS_LAST_NAME'] = $member['password'];
+      			session_write_close();
+      			header("location:home.php");
+      			exit();
+      		}
+      		else{
+      			//Login failed
+      			$errmsg_arr[] = 'username and password not found';
+      			$errflag = true;
+      			if ($errflag) {
+      				$_SESSION['ERRMSG_ARR'] = $errmsg_arr;
+      				session_write_close();
+      				header('location:index.php');
+      				exit();
+      			}
+      		}
+
+      }
+      else{
+      	die("Query failed");
+      }
 
 ?>
